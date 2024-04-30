@@ -12,7 +12,7 @@ public class PeoplePage {
             rows = $(".abstract-table tbody")
             .$$("tr");
 
-    public SelenideElement userNameRow (String username) {
+    private SelenideElement userNameRow (String username) {
         return rows.find((text(username)));
     }
 
