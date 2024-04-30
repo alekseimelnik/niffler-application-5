@@ -6,7 +6,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 
 public class WelcomePage {
-    public SelenideElement
+    private final SelenideElement
             loginBtn = $("a[href*='redirect']"),
             registerBtn = $("a[href*='register']");
 

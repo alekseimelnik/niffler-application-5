@@ -8,7 +8,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 public class PeoplePage {
-    final ElementsCollection
+    private final ElementsCollection
             rows = $(".abstract-table tbody")
             .$$("tr");
 
