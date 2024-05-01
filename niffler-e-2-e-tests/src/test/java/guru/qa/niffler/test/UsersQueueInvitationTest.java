@@ -37,7 +37,6 @@ public class UsersQueueInvitationTest {
 
         peoplePage.isFriend(userForTest.username());
         peoplePage.isInviteSent(userForAnotherTest.username());
-
     }
 
     @Test
@@ -47,7 +46,6 @@ public class UsersQueueInvitationTest {
 
         peoplePage.isFriend(userForTest.username());
         peoplePage.isInvitationReceived(userForAnotherTest.username());
-
     }
 
     @Test
@@ -57,7 +55,6 @@ public class UsersQueueInvitationTest {
 
         peoplePage.isInviteSent(userForTest.username());
         peoplePage.isInvitationReceived(userForAnotherTest.username());
-
     }
 
     @Test
@@ -67,7 +64,6 @@ public class UsersQueueInvitationTest {
 
         peoplePage.isFriend(userForTest.username());
         peoplePage.isInviteSent(userForAnotherTest.username());
-
     }
 
     @Test
@@ -77,7 +73,6 @@ public class UsersQueueInvitationTest {
 
         peoplePage.isFriend(userForTest.username());
         peoplePage.isInvitationReceived(userForAnotherTest.username());
-
     }
 
     @Test
@@ -87,6 +82,14 @@ public class UsersQueueInvitationTest {
 
         peoplePage.isInviteSent(userForTest.username());
         peoplePage.isInvitationReceived(userForAnotherTest.username());
+    }
 
+    @Test
+    void friendsTestWithFriendAndFriend(@User(selector = FRIEND) UserJson userForTest,
+                                        @User(selector = FRIEND) UserJson userForAnotherTest) {
+        Selenide.open("http://127.0.0.1:3000/people");
+
+        peoplePage.isFriend(userForTest.username());
+        peoplePage.isFriend(userForAnotherTest.username());
     }
 }
