@@ -62,7 +62,7 @@ public class UsersQueueExtension implements
                 .filter(p -> p.isAnnotationPresent(User.class))
                 .toList();
 
-        Map<User.Selector, UserJson> users = new HashMap<>();
+        Map<User.Selector, List<UserJson>> users = new HashMap<>();
 
         for (Parameter parameter : parameters) {
             User.Selector selector = parameter.getAnnotation(User.class).selector();
@@ -76,7 +76,7 @@ public class UsersQueueExtension implements
             while (userForTest == null) {
                 userForTest = queue.poll();
             }
-            users.put(selector, userForTest);
+            users.put(selector, Collections.singletonList(userForTest));
         }
 
         Allure.getLifecycle().updateTestCase(testCase -> {
@@ -87,11 +87,16 @@ public class UsersQueueExtension implements
 
     @Override
     public void afterEach(ExtensionContext context) {
-        Map<User.Selector, UserJson> users = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
-        for (Map.Entry<User.Selector, UserJson> user : users.entrySet()) {
-            if(user != null) {
-                USERS.get(user.getKey()).add(user.getValue());
-            }
+        Map<User.Selector, List<UserJson>> users = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
+        if (users != null) {
+            users.forEach((selector, userList) -> {
+                if (userList != null && !userList.isEmpty()) {
+                    UserJson userFromTest = userList.getFirst();
+                    if (userFromTest != null) {
+                        USERS.get(selector).add(userFromTest);
+                    }
+                }
+            });
         }
     }
 
@@ -108,12 +113,13 @@ public class UsersQueueExtension implements
 
     @Override
     public UserJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        User.Selector selector = parameterContext.getParameter()
-                .getAnnotation(User.class)
-                .selector();
-        return (UserJson) extensionContext
+        User annotation = parameterContext
+                .getParameter()
+                .getAnnotation(User.class);
+        Map<User.Selector, List<UserJson>> users = extensionContext
                 .getStore(NAMESPACE)
-                .get(extensionContext.getUniqueId(), Map.class)
-                .get(selector);
+                .get(extensionContext.getUniqueId(), Map.class);
+        List<UserJson> userList = users.get(annotation.selector());
+        return userList.getFirst();
     }
 }
