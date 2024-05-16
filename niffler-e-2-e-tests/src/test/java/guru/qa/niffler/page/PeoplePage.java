@@ -16,26 +16,23 @@ public class PeoplePage {
         return rows.find((text(username)));
     }
 
-    public boolean isFriend (String username){
+    public void isFriend (String username){
         userNameRow(username).lastChild()
                 .$("div")
                 .shouldHave(text("You are friends"));
-        return true;
     }
 
-    public boolean isInviteSent (String username){
+    public void isInviteSent (String username){
         userNameRow(username).lastChild()
                 .$("div")
                 .shouldHave(text("Pending invitation"));
-        return true;
     }
 
-    public boolean isInvitationReceived(String username) {
+    public void isInvitationReceived(String username) {
         userNameRow(username).lastChild().
                 $(".abstract-table__buttons div")
                 .shouldHave(attribute(
                         "data-tooltip-id",
                         "submit-invitation"));
-        return true;
     }
 }
