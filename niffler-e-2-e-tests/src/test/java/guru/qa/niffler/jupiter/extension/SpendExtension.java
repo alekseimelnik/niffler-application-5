@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
 
-public class SpendExtension implements BeforeEachCallback, ParameterResolver {
+public abstract class SpendExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE
             = ExtensionContext.Namespace.create(SpendExtension.class);
@@ -90,4 +90,8 @@ public class SpendExtension implements BeforeEachCallback, ParameterResolver {
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId());
     }
+
+    protected abstract CategoryJson createCategory(CategoryJson spend);
+
+    protected abstract void removeCategory(CategoryJson spend);
 }

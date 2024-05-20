@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.entity;
 
 import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.SpendJson;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,17 @@ public class SpendEntity implements Serializable {
     private Date spendDate;
     private Double amount;
     private String description;
-    private CategoryEntity category;
+    private String category;
+
+    public static SpendEntity fromJson(SpendJson spendJson) {
+        SpendEntity entity = new SpendEntity();
+        entity.setId(spendJson.id());
+        entity.setUsername(spendJson.username());
+        entity.setCurrency(spendJson.currency());
+        entity.setSpendDate(spendJson.spendDate());
+        entity.setAmount(spendJson.amount());
+        entity.setDescription(spendJson.description());
+        entity.setCategory(spendJson.category());
+        return entity;
+    }
 }

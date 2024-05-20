@@ -18,7 +18,7 @@ import java.util.Objects;
 
 import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
 
-public class CategoryExtension implements BeforeEachCallback {
+public abstract class CategoryExtension implements BeforeEachCallback {
 
     public static final ExtensionContext.Namespace NAMESPACE
             = ExtensionContext.Namespace.create(CategoryExtension.class);
@@ -60,4 +60,8 @@ public class CategoryExtension implements BeforeEachCallback {
                 }
         );
     }
+
+    protected abstract CategoryJson createCategory(CategoryJson spend);
+
+    protected abstract void removeCategory(CategoryJson spend);
 }

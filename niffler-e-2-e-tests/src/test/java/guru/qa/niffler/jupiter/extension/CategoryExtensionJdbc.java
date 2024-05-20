@@ -40,6 +40,6 @@ public class CategoryExtensionJdbc implements BeforeEachCallback, AfterEachCallb
     @Override
     public void afterEach(ExtensionContext extensionContext) throws Exception {
         CategoryJson categoryJson = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
-        spendRepository.removeCategory(CategoryEntity.ftomJson(categoryJson));
+        spendRepository.removeCategory(CategoryEntity.fromJson(categoryJson));
     }
 }
