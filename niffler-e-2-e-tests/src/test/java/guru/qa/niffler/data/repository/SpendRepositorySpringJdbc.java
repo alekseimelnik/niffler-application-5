@@ -1,22 +1,73 @@
 package guru.qa.niffler.data.repository;
 
+import guru.qa.niffler.data.DataBase;
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
+import guru.qa.niffler.data.jdbc.DataSourceProvider;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
-public class SpendRepositorySpringJdbc implements SpendRepository{
+import java.sql.*;
+import java.util.UUID;
+
+public class SpendRepositorySpringJdbc implements SpendRepository {
+
+    private static final JdbcTemplate jdbcTemplate = new JdbcTemplate(
+            DataSourceProvider.dataSource(DataBase.SPEND)
+    );
+
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
+        KeyHolder kh = new GeneratedKeyHolder();
+
+        jdbcTemplate.update( con -> {
+            PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO \"category\" (category, username) VALUES (?, ?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS
+            );
+            ps.setString(1, category.getCategory());
+            ps.setString(2, category.getUsername());
+                    return ps;
+        }, kh
+        );
+        category.setId(UUID.fromString((String)kh.getKeys().get("id")));
+        return category;
+    }
+
+    @Override
+    public CategoryEntity editCategory(CategoryEntity category) {
         return null;
     }
 
     @Override
     public void removeCategory(CategoryEntity category) {
-
+        jdbcTemplate.update(
+                "DELETE FROM category WHERE id = ?",
+                category.getId());
     }
 
     @Override
     public SpendEntity createSpend(SpendEntity spend) {
-        return null;
+        KeyHolder kh = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(con -> {
+                    PreparedStatement ps = con.prepareStatement(
+                            "INSERT INTO spend (" +
+                                    "username, currency, spend_date, amount, description, category_id) " +
+                                    "VALUES (?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS
+                    );
+                    ps.setString(1, spend.getUsername());
+                    ps.setString(2, spend.getCurrency().name());
+                    ps.setDate(3, new Date(spend.getSpendDate().getTime()));
+                    ps.setDouble(4, spend.getAmount());
+                    ps.setString(5, spend.getDescription());
+                    ps.setObject(6, spend.getCategory());
+                    return ps;
+                }, kh
+        );
+        spend.setId(UUID.fromString((String) kh.getKeys().get("id")));
+        return spend;
     }
 
     @Override

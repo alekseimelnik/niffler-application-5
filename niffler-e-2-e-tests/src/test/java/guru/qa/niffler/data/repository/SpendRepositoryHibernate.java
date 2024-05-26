@@ -10,6 +10,11 @@ public class SpendRepositoryHibernate implements SpendRepository{
     }
 
     @Override
+    public CategoryEntity editCategory(CategoryEntity category) {
+        return null;
+    }
+
+    @Override
     public void removeCategory(CategoryEntity category) {
 
     }

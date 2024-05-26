@@ -40,6 +40,11 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
 
     @Override
+    public CategoryEntity editCategory(CategoryEntity category) {
+        return null;
+    }
+
+    @Override
     public void removeCategory(CategoryEntity category) {
         try (Connection connection = spendDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(
