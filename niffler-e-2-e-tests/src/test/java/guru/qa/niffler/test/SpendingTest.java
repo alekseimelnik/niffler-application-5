@@ -60,9 +60,12 @@ public class SpendingTest {
             username = "Aleksei"
     )
     @Spend(
-            description = "QA.GURU Advanced 5",
+            spendDate = "currentDate",
+            category = "Обучение",
+            currency = CurrencyValues.RUB,
             amount = 65000.00,
-            currency = CurrencyValues.RUB
+            description = "QA.GURU Advanced 5",
+            username = "Aleksei"
     )
     @Test
     void spendingShouldBeDeletedAfterTableAction(SpendJson spendJson) {

@@ -41,6 +41,11 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     }
 
     @Override
+    public CategoryEntity editCategory(CategoryEntity category) {
+        return null;
+    }
+
+    @Override
     public void removeCategory(CategoryEntity category) {
         jdbcTemplate.update(
                 "DELETE FROM category WHERE id = ?",

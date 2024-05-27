@@ -41,7 +41,19 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
     @Override
     public CategoryEntity editCategory(CategoryEntity category) {
-        return null;
+        try (Connection connection = spendDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(
+                     "UPDATE category SET category = ?, username = ? WHERE id = ?"
+             )) {
+            ps.setString(1, category.getCategory());
+            ps.setString(2, category.getUsername());
+            ps.setObject(3,category.getId());
+
+            ps.executeUpdate();
+            return category;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
