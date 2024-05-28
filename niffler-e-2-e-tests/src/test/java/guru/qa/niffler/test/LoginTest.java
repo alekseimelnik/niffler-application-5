@@ -5,6 +5,7 @@ import guru.qa.niffler.data.entity.CurrencyValues;
 import guru.qa.niffler.data.entity.UserAuthEntity;
 import guru.qa.niffler.data.entity.UserEntity;
 import guru.qa.niffler.data.repository.UserRepository;
+import guru.qa.niffler.data.repository.springjdbc.UserRepositorySpringJdbc;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
@@ -19,7 +20,8 @@ import static com.codeborne.selenide.Selenide.$;
 @WebTest
 public class LoginTest {
 
-    UserRepository userRepository = UserRepository.getInstance();
+    UserRepository userRepository = new UserRepositorySpringJdbc();
+    UserEntity userDataUser;
 
     @BeforeEach
     void createUserForTest() {
@@ -34,11 +36,11 @@ public class LoginTest {
 
         userRepository.createUserInAuth(user);
 
-        UserEntity userDataUser = new UserEntity();
+        UserEntity userEntity = new UserEntity();
         userDataUser.setUsername("jdbc_user");
         userDataUser.setCurrency(CurrencyValues.RUB);
 
-        userRepository.createUserInUserData(userDataUser);
+        userDataUser = userRepository.createUserInUserData(userDataUser);
     }
 
     @User
@@ -51,5 +53,7 @@ public class LoginTest {
         welcomePage.clickLoginBtn();
         loginPage.doLogin(user.username(), user.testData().password());
         $(".header__avatar").shouldBe(visible);
+
+        userRepository.findUserInUserDataById(userDataUser.getId());
     }
 }

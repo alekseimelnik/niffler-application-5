@@ -1,9 +1,10 @@
-package guru.qa.niffler.data.repository;
+package guru.qa.niffler.data.repository.hibernate;
 
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
+import guru.qa.niffler.data.repository.SpendRepository;
 
-public class SpendRepositoryHibernate implements SpendRepository{
+public class SpendRepositoryHibernate implements SpendRepository {
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         return null;

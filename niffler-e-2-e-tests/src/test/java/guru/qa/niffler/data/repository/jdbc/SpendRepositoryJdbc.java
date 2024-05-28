@@ -1,9 +1,10 @@
-package guru.qa.niffler.data.repository;
+package guru.qa.niffler.data.repository.jdbc;
 
 import guru.qa.niffler.data.DataBase;
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
 import guru.qa.niffler.data.jdbc.DataSourceProvider;
+import guru.qa.niffler.data.repository.SpendRepository;
 
 import javax.sql.DataSource;
 import java.sql.*;

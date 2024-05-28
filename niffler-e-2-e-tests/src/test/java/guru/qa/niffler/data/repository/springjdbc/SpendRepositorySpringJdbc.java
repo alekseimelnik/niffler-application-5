@@ -1,9 +1,10 @@
-package guru.qa.niffler.data.repository;
+package guru.qa.niffler.data.repository.springjdbc;
 
 import guru.qa.niffler.data.DataBase;
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
 import guru.qa.niffler.data.jdbc.DataSourceProvider;
+import guru.qa.niffler.data.repository.SpendRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -31,18 +32,19 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
                     return ps;
         }, kh
         );
-        category.setId(UUID.fromString((String)kh.getKeys().get("id")));
+        category.setId((UUID) kh.getKeys().get("id"));
         return category;
     }
 
     @Override
     public CategoryEntity editCategory(CategoryEntity category) {
-        return null;
-    }
-
-    @Override
-    public CategoryEntity editCategory(CategoryEntity category) {
-        return null;
+        jdbcTemplate.update(
+                "UPDATE category SET category = ?, username = ? WHERE id = ?",
+                category.getCategory(),
+                category.getUsername(),
+                category.getId()
+        );
+        return category;
     }
 
     @Override
@@ -71,17 +73,30 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
                     return ps;
                 }, kh
         );
-        spend.setId(UUID.fromString((String) kh.getKeys().get("id")));
+        spend.setId((UUID) kh.getKeys().get("id"));
         return spend;
     }
 
     @Override
     public SpendEntity editSpend(SpendEntity spend) {
-        return null;
+        jdbcTemplate.update(
+                "UPDATE spend SET username = ?, currency = ?, spend_date = ?, amount = ?," +
+                        "description = ?, category_id = ? WHERE id = ?",
+                spend.getUsername(),
+                spend.getCurrency().name(),
+                new Date(spend.getSpendDate().getTime()),
+                spend.getAmount(),
+                spend.getDescription(),
+                spend.getCategory(),
+                spend.getId()
+        );
+        return spend;
     }
 
     @Override
     public void removeSpend(SpendEntity spend) {
-
+        jdbcTemplate.update(
+                "DELETE FROM spend WHERE id = ?",
+                spend.getId());
     }
 }

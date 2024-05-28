@@ -1,10 +1,11 @@
-package guru.qa.niffler.data.repository;
+package guru.qa.niffler.data.repository.jdbc;
 
 import guru.qa.niffler.data.DataBase;
 import guru.qa.niffler.data.entity.Authority;
 import guru.qa.niffler.data.entity.UserAuthEntity;
 import guru.qa.niffler.data.entity.UserEntity;
 import guru.qa.niffler.data.jdbc.DataSourceProvider;
+import guru.qa.niffler.data.repository.UserRepository;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -13,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 
 public class UserRepositoryJdbc implements UserRepository {
@@ -114,5 +116,10 @@ public class UserRepositoryJdbc implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Optional<UserEntity> findUserInUserDataById(UUID id) {
+        return Optional.empty();
     }
 }
