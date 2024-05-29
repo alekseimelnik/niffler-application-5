@@ -2,6 +2,7 @@ package guru.qa.niffler.data.repository.jdbc;
 
 import guru.qa.niffler.data.DataBase;
 import guru.qa.niffler.data.entity.Authority;
+import guru.qa.niffler.data.entity.AuthorityEntity;
 import guru.qa.niffler.data.entity.UserAuthEntity;
 import guru.qa.niffler.data.entity.UserEntity;
 import guru.qa.niffler.data.jdbc.DataSourceProvider;
@@ -10,10 +11,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -121,5 +119,78 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public Optional<UserEntity> findUserInUserDataById(UUID id) {
         return Optional.empty();
+    }
+
+    @Override
+    public UserAuthEntity updateUserInAuth(UserAuthEntity user) {
+        try (Connection connection = authDataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try
+                    (PreparedStatement userPs = connection.prepareStatement(
+                            "UPDATE \"user\" SET username=?, password=?, enabled=?, account_non_expired=?," +
+                                    "account_non_locked=?, credentials_non_expired=?) " +
+                                    "WHERE id=?",
+                            PreparedStatement.RETURN_GENERATED_KEYS
+                    );
+                     PreparedStatement deleteAuthorityPs = connection.prepareStatement(
+                             "DELETE FROM \"authority\" WHERE user_id=?"
+                     );
+                     PreparedStatement authorityPs = connection.prepareStatement(
+                             "INSERT INTO \"authority\" (" +
+                                     "user_id, authority) " +
+                                     "VALUES (?, ?)"
+                     )) {
+
+                userPs.setString(1, user.getUsername());
+                userPs.setString(2, pe.encode(user.getPassword()));
+                userPs.setBoolean(3, user.getEnabled());
+                userPs.setBoolean(4, user.getAccountNonExpired());
+                userPs.setBoolean(5, user.getAccountNonLocked());
+                userPs.setBoolean(6, user.getCredentialsNonExpired());
+                userPs.setObject(7,user.getId());
+
+                userPs.executeUpdate();
+
+                deleteAuthorityPs.setObject(1,user.getId());
+                deleteAuthorityPs.executeUpdate();
+
+                for (AuthorityEntity a : user.getAuthorities()){
+                    authorityPs.setObject(1, user.getId());
+                    authorityPs.setString(2, a.getAuthority().name());
+                    authorityPs.addBatch();
+                    authorityPs.clearParameters();
+                }
+                authorityPs.executeBatch();
+                connection.commit();
+                return user;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UserEntity updateUserInUserdata(UserEntity user) {
+        try (Connection connection = userDataDataSource.getConnection();
+             PreparedStatement userPs = connection.prepareStatement(
+                     "UPDATE \"user\" SET username=?, currency=?," +
+                             "firstname=?, surname=?, photo=?," +
+                             "photo_small=? WHERE id=?"
+             )) {
+            userPs.setString(1, user.getUsername());
+            userPs.setString(2, user.getCurrency().name());
+            userPs.setString(3, user.getFirstname());
+            userPs.setString(4, user.getSurname());
+            userPs.setObject(5, user.getPhoto());
+            userPs.setObject(6, user.getPhoto_small());
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

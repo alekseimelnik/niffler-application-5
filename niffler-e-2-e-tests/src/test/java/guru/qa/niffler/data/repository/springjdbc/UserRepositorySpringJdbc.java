@@ -123,4 +123,58 @@ public class UserRepositorySpringJdbc implements UserRepository {
         }
 
     }
+
+    @Override
+    public UserAuthEntity updateUserInAuth(UserAuthEntity user) {
+        return authTxTemplate.execute(status -> {
+            authJdbcTemplate.update(con -> {
+                PreparedStatement ps = con.prepareStatement(
+                        "UPDATE \"user\" SET username=?, password=?," +
+                                "enabled=?, account_non_expired=?, account_non_locked=?," +
+                                "credentials_non_expired=? WHERE id=?");
+                ps.setString(1, user.getUsername());
+                ps.setString(2, pe.encode(user.getPassword()));
+                ps.setBoolean(3, user.getEnabled());
+                ps.setBoolean(4, user.getAccountNonExpired());
+                ps.setBoolean(5, user.getAccountNonLocked());
+                ps.setBoolean(6, user.getCredentialsNonExpired());
+                return ps;
+            });
+            authJdbcTemplate.update("DELETE FROM \"authority\" WHERE user_id = ?", user.getId());
+
+            authJdbcTemplate.batchUpdate(
+                    "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
+                    new BatchPreparedStatementSetter() {
+                        @Override
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            ps.setObject(1, user.getId());
+                            ps.setString(2, Authority.values()[i].name());
+                        }
+
+                        @Override
+                        public int getBatchSize() {
+                            return Authority.values().length;
+                        }
+                    }
+            );
+            return user;
+        });
+    }
+
+    @Override
+    public UserEntity updateUserInUserdata(UserEntity user) {
+        userDataJdbcTemplate.update(
+                "UPDATE \"user\" (" +
+                        "username, currency, firstname, surname, " +
+                        "photo, photo_small) " +
+                        "VALUES (?, ?, ?, ?, ?, ?)",
+                user.getUsername(),
+                user.getCurrency().name(),
+                user.getFirstname(),
+                user.getSurname(),
+                user.getPhoto(),
+                user.getPhoto_small()
+        );
+        return user;
+    }
 }
