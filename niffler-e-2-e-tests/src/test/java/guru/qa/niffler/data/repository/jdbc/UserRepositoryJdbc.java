@@ -1,12 +1,11 @@
 package guru.qa.niffler.data.repository.jdbc;
 
 import guru.qa.niffler.data.DataBase;
-import guru.qa.niffler.data.entity.Authority;
-import guru.qa.niffler.data.entity.AuthorityEntity;
-import guru.qa.niffler.data.entity.UserAuthEntity;
-import guru.qa.niffler.data.entity.UserEntity;
+import guru.qa.niffler.data.entity.*;
 import guru.qa.niffler.data.jdbc.DataSourceProvider;
 import guru.qa.niffler.data.repository.UserRepository;
+import guru.qa.niffler.data.sjdbc.UserEntityRowMapper;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -118,7 +117,28 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public Optional<UserEntity> findUserInUserDataById(UUID id) {
-        return Optional.empty();
+        UserEntity userEntity = new UserEntity();
+        try (Connection connection = userDataDataSource.getConnection();
+            PreparedStatement userPs = connection.prepareStatement(
+                    "SELECT * FROM \"user\" WHERE id = ?")) {
+                userPs.setObject(1, id);
+                try (ResultSet resultSet = userPs.executeQuery()){
+                    if (resultSet.next()) {
+                        userEntity.setId((UUID)resultSet.getObject("id"));
+                        userEntity.setUsername(resultSet.getString("username"));
+                        userEntity.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
+                        userEntity.setFirstname(resultSet.getString("firstname"));
+                        userEntity.setSurname(resultSet.getString("surname"));
+                        userEntity.setPhoto(resultSet.getBytes("photo"));
+                        userEntity.setPhoto_small(resultSet.getBytes("photo_small"));
+                    } else {
+                        return Optional.empty();
+                    }
+                }
+            } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.of(userEntity);
     }
 
     @Override
@@ -147,14 +167,14 @@ public class UserRepositoryJdbc implements UserRepository {
                 userPs.setBoolean(4, user.getAccountNonExpired());
                 userPs.setBoolean(5, user.getAccountNonLocked());
                 userPs.setBoolean(6, user.getCredentialsNonExpired());
-                userPs.setObject(7,user.getId());
+                userPs.setObject(7, user.getId());
 
                 userPs.executeUpdate();
 
-                deleteAuthorityPs.setObject(1,user.getId());
+                deleteAuthorityPs.setObject(1, user.getId());
                 deleteAuthorityPs.executeUpdate();
 
-                for (AuthorityEntity a : user.getAuthorities()){
+                for (AuthorityEntity a : user.getAuthorities()) {
                     authorityPs.setObject(1, user.getId());
                     authorityPs.setString(2, a.getAuthority().name());
                     authorityPs.addBatch();

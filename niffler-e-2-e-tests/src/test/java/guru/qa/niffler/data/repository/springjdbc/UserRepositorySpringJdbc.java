@@ -121,7 +121,6 @@ public class UserRepositorySpringJdbc implements UserRepository {
         } catch (DataRetrievalFailureException e) {
             return Optional.empty();
         }
-
     }
 
     @Override
