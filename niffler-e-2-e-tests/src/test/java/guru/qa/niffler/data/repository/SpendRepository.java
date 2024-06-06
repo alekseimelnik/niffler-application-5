@@ -6,6 +6,8 @@ import guru.qa.niffler.data.repository.hibernate.SpendRepositoryHibernate;
 import guru.qa.niffler.data.repository.jdbc.SpendRepositoryJdbc;
 import guru.qa.niffler.data.repository.springjdbc.SpendRepositorySpringJdbc;
 
+import java.util.List;
+
 public interface SpendRepository {
 
     static SpendRepository getInstance() {
@@ -27,5 +29,7 @@ public interface SpendRepository {
     SpendEntity editSpend(SpendEntity spend);
 
     void removeSpend(SpendEntity spend);
+
+    List<SpendEntity> findAllByUsername(String username);
 
 }

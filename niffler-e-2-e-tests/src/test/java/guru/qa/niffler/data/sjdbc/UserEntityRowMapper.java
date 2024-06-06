@@ -2,10 +2,8 @@ package guru.qa.niffler.data.sjdbc;
 
 import guru.qa.niffler.data.entity.CurrencyValues;
 import guru.qa.niffler.data.entity.UserEntity;
-import guru.qa.niffler.jupiter.annotation.User;
 import org.springframework.jdbc.core.RowMapper;
 
-import javax.swing.tree.TreePath;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -23,6 +21,10 @@ public class UserEntityRowMapper implements RowMapper<UserEntity> {
 
         userEntity.setUsername(rs.getString("username"));
         userEntity.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+        userEntity.setFirstname(rs.getString("firstname"));
+        userEntity.setSurname(rs.getString("surname"));
+        userEntity.setPhoto(rs.getBytes("photo"));
+        userEntity.setPhoto_small(rs.getBytes("photo_small"));
         return userEntity;
     }
 }
