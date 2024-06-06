@@ -43,7 +43,6 @@ public class LoginTest {
         userDataUser = userRepository.createUserInUserData(userDataUser);
     }
 
-    @User
     @Test
     void loginTest(UserJson user) {
         WelcomePage welcomePage = new WelcomePage();
