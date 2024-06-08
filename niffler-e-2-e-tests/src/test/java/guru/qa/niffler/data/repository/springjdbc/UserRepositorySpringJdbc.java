@@ -77,7 +77,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
 
                         @Override
                         public int getBatchSize() {
-                            return Authority.values().length;
+                            return user.getAuthorities().size();
                         }
                     }
             );
@@ -152,7 +152,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
 
                         @Override
                         public int getBatchSize() {
-                            return Authority.values().length;
+                            return user.getAuthorities().size();
                         }
                     }
             );

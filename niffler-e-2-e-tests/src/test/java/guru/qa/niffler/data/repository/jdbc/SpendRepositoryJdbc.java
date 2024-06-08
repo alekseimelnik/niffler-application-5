@@ -145,13 +145,13 @@ public class SpendRepositoryJdbc implements SpendRepository {
     @Override
     public List<SpendEntity> findAllByUsername(String username) {
         List<SpendEntity> spends = new ArrayList<>();
-        SpendEntity spend = new SpendEntity();
         try (Connection connection = spendDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(
                      "SELECT * FROM spend WHERE id = ?")) {
             ps.setString(1, username);
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
+                SpendEntity spend = new SpendEntity();
                 spend.setId(UUID.fromString(resultSet.getString("id")));
                 spend.setUsername(resultSet.getString("username"));
                 spend.setSpendDate(resultSet.getDate("spend_date"));
@@ -159,6 +159,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
                 spend.setAmount(resultSet.getDouble("amount"));
                 spend.setDescription(resultSet.getString("description"));
                 spend.setCategory(resultSet.getString("category"));
+                spends.add(spend);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
