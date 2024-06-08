@@ -1,9 +1,12 @@
-package guru.qa.niffler.data.repository;
+package guru.qa.niffler.data.repository.hibernate;
 
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
+import guru.qa.niffler.data.repository.SpendRepository;
 
-public class SpendRepositoryHibernate implements SpendRepository{
+import java.util.List;
+
+public class SpendRepositoryHibernate implements SpendRepository {
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         return null;
@@ -32,5 +35,10 @@ public class SpendRepositoryHibernate implements SpendRepository{
     @Override
     public void removeSpend(SpendEntity spend) {
 
+    }
+
+    @Override
+    public List<SpendEntity> findAllByUsername(String username) {
+        return List.of();
     }
 }

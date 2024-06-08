@@ -2,6 +2,11 @@ package guru.qa.niffler.data.repository;
 
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
+import guru.qa.niffler.data.repository.hibernate.SpendRepositoryHibernate;
+import guru.qa.niffler.data.repository.jdbc.SpendRepositoryJdbc;
+import guru.qa.niffler.data.repository.springjdbc.SpendRepositorySpringJdbc;
+
+import java.util.List;
 
 public interface SpendRepository {
 
@@ -24,5 +29,7 @@ public interface SpendRepository {
     SpendEntity editSpend(SpendEntity spend);
 
     void removeSpend(SpendEntity spend);
+
+    List<SpendEntity> findAllByUsername(String username);
 
 }

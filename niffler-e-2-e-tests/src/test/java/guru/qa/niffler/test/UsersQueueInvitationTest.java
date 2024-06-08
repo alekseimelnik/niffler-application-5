@@ -10,7 +10,9 @@ import guru.qa.niffler.page.WelcomePage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.jupiter.annotation.User.Selector.*;
+import static guru.qa.niffler.jupiter.annotation.User.Selector.FRIEND;
+import static guru.qa.niffler.jupiter.annotation.User.Selector.INVITE_RECEIVED;
+import static guru.qa.niffler.jupiter.annotation.User.Selector.INVITE_SENT;
 
 
 @WebTest

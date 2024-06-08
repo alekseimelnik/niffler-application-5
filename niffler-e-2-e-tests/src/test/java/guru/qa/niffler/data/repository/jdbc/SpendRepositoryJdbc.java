@@ -1,12 +1,17 @@
-package guru.qa.niffler.data.repository;
+package guru.qa.niffler.data.repository.jdbc;
 
 import guru.qa.niffler.data.DataBase;
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
+import guru.qa.niffler.data.entity.UserEntity;
 import guru.qa.niffler.data.jdbc.DataSourceProvider;
+import guru.qa.niffler.data.repository.SpendRepository;
+import guru.qa.niffler.model.CurrencyValues;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class SpendRepositoryJdbc implements SpendRepository {
@@ -135,5 +140,30 @@ public class SpendRepositoryJdbc implements SpendRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<SpendEntity> findAllByUsername(String username) {
+        List<SpendEntity> spends = new ArrayList<>();
+        try (Connection connection = spendDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(
+                     "SELECT * FROM spend WHERE id = ?")) {
+            ps.setString(1, username);
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                SpendEntity spend = new SpendEntity();
+                spend.setId(UUID.fromString(resultSet.getString("id")));
+                spend.setUsername(resultSet.getString("username"));
+                spend.setSpendDate(resultSet.getDate("spend_date"));
+                spend.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
+                spend.setAmount(resultSet.getDouble("amount"));
+                spend.setDescription(resultSet.getString("description"));
+                spend.setCategory(resultSet.getString("category"));
+                spends.add(spend);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return spends;
     }
 }
