@@ -1,5 +1,6 @@
 package guru.qa.niffler.jupiter.extension.jdbc;
 
+import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.data.repository.jdbc.SpendRepositoryJdbc;

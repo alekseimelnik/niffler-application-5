@@ -1,6 +1,6 @@
 package guru.qa.niffler.jupiter.annotation;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
 import java.lang.annotation.ElementType;
@@ -17,8 +17,6 @@ public @interface Spend {
     String description();
 
     String spendDate();
-
-    String category();
 
     String username();
 }
