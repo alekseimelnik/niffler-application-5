@@ -58,9 +58,9 @@ public class UserRepositoryJdbc implements UserRepository {
                 }
                 user.setId(generateUserId);
 
-                for (Authority a :Authority.values()){
-                    authorityPs.setObject(1, generateUserId);
-                    authorityPs.setString(2, a.name());
+                for (AuthorityEntity a : user.getAuthorities()) {
+                    authorityPs.setObject(1, user.getId());
+                    authorityPs.setString(2, a.getAuthority().name());
                     authorityPs.addBatch();
                     authorityPs.clearParameters();
                 }

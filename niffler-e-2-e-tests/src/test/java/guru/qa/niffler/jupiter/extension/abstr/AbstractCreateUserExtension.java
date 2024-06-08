@@ -16,7 +16,7 @@ public abstract class AbstractCreateUserExtension implements BeforeEachCallback,
                 extensionContext.getRequiredTestMethod(),
                 TestUser.class
         ).ifPresent(
-                cat ->
+                user ->
                         extensionContext
                                 .getStore(NAMESPACE)
                                 .put(extensionContext.getUniqueId(),
