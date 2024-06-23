@@ -102,7 +102,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
                     ps.setString(3, user.getFirstname());
                     ps.setString(4, user.getSurname());
                     ps.setObject(5, user.getPhoto());
-                    ps.setObject(6, user.getPhoto_small());
+                    ps.setObject(6, user.getPhotoSmall());
                     return ps;
                 }, kh
         );
@@ -172,7 +172,7 @@ public class UserRepositorySpringJdbc implements UserRepository {
                 user.getFirstname(),
                 user.getSurname(),
                 user.getPhoto(),
-                user.getPhoto_small()
+                user.getPhotoSmall()
         );
         return user;
     }

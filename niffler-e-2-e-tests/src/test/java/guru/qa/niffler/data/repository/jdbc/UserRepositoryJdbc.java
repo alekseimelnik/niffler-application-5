@@ -95,7 +95,7 @@ public class UserRepositoryJdbc implements UserRepository {
                 userPs.setString(3, user.getFirstname());
                 userPs.setString(4, user.getSurname());
                 userPs.setObject(5, user.getPhoto());
-                userPs.setObject(6, user.getPhoto_small());
+                userPs.setObject(6, user.getPhotoSmall());
 
                 userPs.executeUpdate();
 
@@ -130,7 +130,7 @@ public class UserRepositoryJdbc implements UserRepository {
                         userEntity.setFirstname(resultSet.getString("firstname"));
                         userEntity.setSurname(resultSet.getString("surname"));
                         userEntity.setPhoto(resultSet.getBytes("photo"));
-                        userEntity.setPhoto_small(resultSet.getBytes("photo_small"));
+                        userEntity.setPhotoSmall(resultSet.getBytes("photo_small"));
                     } else {
                         return Optional.empty();
                     }
@@ -207,7 +207,7 @@ public class UserRepositoryJdbc implements UserRepository {
             userPs.setString(3, user.getFirstname());
             userPs.setString(4, user.getSurname());
             userPs.setObject(5, user.getPhoto());
-            userPs.setObject(6, user.getPhoto_small());
+            userPs.setObject(6, user.getPhotoSmall());
             return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);

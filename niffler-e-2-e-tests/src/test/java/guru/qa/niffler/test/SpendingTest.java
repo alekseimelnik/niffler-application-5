@@ -61,7 +61,6 @@ public class SpendingTest {
     )
     @Spend(
             spendDate = "currentDate",
-            category = "Обучение",
             currency = CurrencyValues.RUB,
             amount = 65000.00,
             description = "QA.GURU Advanced 5",
