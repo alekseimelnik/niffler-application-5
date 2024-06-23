@@ -158,6 +158,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
                 spend.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
                 spend.setAmount(resultSet.getDouble("amount"));
                 spend.setDescription(resultSet.getString("description"));
+//                spend.setCategory((CategoryEntity) resultSet.getObject("id"),
                 spend.setCategory(resultSet.getString("category"));
                 spends.add(spend);
             }
