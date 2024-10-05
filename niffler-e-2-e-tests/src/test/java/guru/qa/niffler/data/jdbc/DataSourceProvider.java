@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.jdbc;
 
+import com.p6spy.engine.spy.P6DataSource;
 import guru.qa.niffler.data.DataBase;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -13,12 +14,12 @@ public enum DataSourceProvider {
     private final Map<DataBase, DataSource> store = new ConcurrentHashMap<>();
 
     private DataSource computeDataSource(DataBase db) {
-        return store.computeIfAbsent(db, key->{
+        return store.computeIfAbsent(db, key -> {
             PGSimpleDataSource pgDataSource = new PGSimpleDataSource();
-            pgDataSource.setURL(db.getJdbcUrl());
+            pgDataSource.setUrl(db.getJdbcUrl());
             pgDataSource.setUser("postgres");
             pgDataSource.setPassword("secret");
-            return pgDataSource;
+            return new P6DataSource(pgDataSource);
         });
     }
 

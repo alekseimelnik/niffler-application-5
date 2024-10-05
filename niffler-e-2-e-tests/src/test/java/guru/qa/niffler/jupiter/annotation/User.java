@@ -5,12 +5,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface User {
-    Selector selector();
 
-    enum Selector{
-        INVITE_SENT, INVITE_RECEIVED, FRIEND
+    Point value() default Point.INNER;
+
+    enum Point {
+        INNER, OUTER
     }
 }

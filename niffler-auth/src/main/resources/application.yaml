@@ -49,6 +49,8 @@ logging:
     org.springframework.web.cors: INFO
     org.apache.catalina.filters.RequestDumperFilter: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
+  file:
+    name: "auth.log"
 
 ---
 spring:
@@ -120,9 +122,6 @@ niffler-front:
   base-uri: 'https://niffler.qa.guru'
 niffler-auth:
   base-uri: 'https://auth.niffler.qa.guru'
-oauth2:
-  client-id: ${client-id}
-  client-secret: ${client-secret}
 ---
 spring:
   config:
@@ -147,7 +146,4 @@ niffler-front:
   base-uri: 'https://niffler-stage.qa.guru'
 niffler-auth:
   base-uri: 'https://auth.niffler-stage.qa.guru'
-oauth2:
-  client-id: ${client-id}
-  client-secret: ${client-secret}
 ---

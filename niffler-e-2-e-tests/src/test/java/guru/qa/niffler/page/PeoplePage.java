@@ -1,38 +1,43 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.PeopleTable;
+import io.qameta.allure.Step;
 
-import static com.codeborne.selenide.Condition.attribute;
+import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
-public class PeoplePage {
-    private final ElementsCollection
-            rows = $(".abstract-table tbody")
-            .$$("tr");
+public class PeoplePage extends BasePage<PeoplePage> {
 
-    private SelenideElement userNameRow (String username) {
-        return rows.find((text(username)));
+    public static final String URL = CFG.frontUrl() + "people";
+
+    private final SelenideElement tableContainer = $(".people-content");
+    private final PeopleTable table = new PeopleTable($(".table"));
+
+    @Step("Check that the page is loaded")
+    @Override
+    public PeoplePage waitForPageLoaded() {
+        tableContainer.shouldBe(Condition.visible);
+        return this;
     }
 
-    public void isFriend (String username){
-        userNameRow(username).lastChild()
-                .$("div")
-                .shouldHave(text("You are friends"));
+    @Step("Send invitation to user: {username}")
+    public PeoplePage sendFriendInvitationToUser(String username) {
+        SelenideElement friendRow = table.getRowByUsername(username);
+        SelenideElement actionsCell = table.getActionsCell(friendRow);
+        actionsCell.$(".button-icon_type_add")
+                .click(usingJavaScript());
+        return this;
     }
 
-    public void isInviteSent (String username){
-        userNameRow(username).lastChild()
-                .$("div")
-                .shouldHave(text("Pending invitation"));
+    @Step("Check invitation status for user: {username}")
+    public PeoplePage checkInvitationSentToUser(String username) {
+        SelenideElement friendRow = table.getRowByUsername(username);
+        SelenideElement actionsCell = table.getActionsCell(friendRow);
+        actionsCell.shouldHave(text("Pending invitation"));
+        return this;
     }
 
-    public void isInvitationReceived(String username) {
-        userNameRow(username).lastChild().
-                $(".abstract-table__buttons div")
-                .shouldHave(attribute(
-                        "data-tooltip-id",
-                        "submit-invitation"));
-    }
 }

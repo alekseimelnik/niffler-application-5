@@ -2,25 +2,29 @@ package guru.qa.niffler.data.repository;
 
 import guru.qa.niffler.data.entity.CategoryEntity;
 import guru.qa.niffler.data.entity.SpendEntity;
-import guru.qa.niffler.data.repository.hibernate.SpendRepositoryHibernate;
-import guru.qa.niffler.data.repository.jdbc.SpendRepositoryJdbc;
-import guru.qa.niffler.data.repository.springjdbc.SpendRepositorySpringJdbc;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface SpendRepository {
 
     static SpendRepository getInstance() {
-        return switch (System.getProperty("repo")) {
-            case "sjdbc" -> new SpendRepositorySpringJdbc();
-            case "hibernate" -> new SpendRepositoryHibernate();
-            default -> new SpendRepositoryJdbc();
-        };
+        if ("sjdbc".equals(System.getProperty("repository"))) {
+            return new SpendRepositorySpringJdbc();
+        }
+        if ("jpa".equals(System.getProperty("repository"))) {
+            return new SpendRepositoryHibernate();
+        }
+        return new SpendRepositoryJdbc();
     }
 
     CategoryEntity createCategory(CategoryEntity category);
 
     CategoryEntity editCategory(CategoryEntity category);
+
+    Optional<CategoryEntity> findCategoryById(UUID id);
+
+    Optional<CategoryEntity> findUserCategoryByName(String username, String category);
 
     void removeCategory(CategoryEntity category);
 
@@ -28,8 +32,8 @@ public interface SpendRepository {
 
     SpendEntity editSpend(SpendEntity spend);
 
-    void removeSpend(SpendEntity spend);
+    Optional<SpendEntity> findSpendById(UUID id);
 
-    List<SpendEntity> findAllByUsername(String username);
+    void removeSpend(SpendEntity spend);
 
 }
